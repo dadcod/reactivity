@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <input id="titleInput" type="text" />
+    <div id="view"></div>
+  </body>
+  <script>
+    function updateElementById(id) {
+      let view = document.getElementById(id);
+      view.innerHTML = data.title;
+    }
+
+    function bindInputToProperty(input, obj, prop) {
+      input.value = obj[prop];
+      input.addEventListener("input", (e) => {
+        // Update the property when the input changes
+        obj[prop] = e.target.value;
+      });
+      Object.defineProperty(obj, prop, {
+        set(value) {
+          this._title = value;
+          input.value = obj[prop]; // Update the view when the title changes
+          updateElementById("view");
+        },
+        get() {
+          return this._title;
+        },
+      });
+    }
+
+    let data = { title: "Hello" };
+    let input = document.getElementById("titleInput");
+
+    bindInputToProperty(input, data, "title");
+    data.title = "daddy"; // This will update the input value
+
+    setInterval(() => {
+      data.title = "daddy";
+      console.log(data.title);
+    }, 5000);
+  </script>
+</html>
