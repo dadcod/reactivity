@@ -20,7 +20,7 @@
         obj[prop] = e.target.value;
       });
 
-      // Create a private property to store the value
+      // Create a private field to store the value
       obj[`_${prop}`] = obj[prop];
 
       Object.defineProperty(obj, prop, {
@@ -40,7 +40,7 @@
       // Set the initial value
       input.innerHTML = obj[prop];
 
-      // Create a private property to store the value
+      // Create a private field to store the value
       obj[`_${prop}`] = obj[prop];
 
       Object.defineProperty(obj, prop, {
