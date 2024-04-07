@@ -3,45 +3,82 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="currency-converter.js"></script>
     <title>Document</title>
   </head>
   <body>
-    <input id="titleInput" type="text" />
-    <div id="view"></div>
+    <currency-converter></currency-converter>
   </body>
   <script>
-    function updateElementById(id) {
-      let view = document.getElementById(id);
-      view.innerHTML = data.title;
-    }
-
-    function bindInputToProperty(input, obj, prop) {
+    //two-way binding
+    function bindInputToProperty(input, obj, prop, effect) {
+      // Set the initial value
       input.value = obj[prop];
+
+      // Listen for changes on the input element and update the object
       input.addEventListener("input", (e) => {
-        // Update the property when the input changes
         obj[prop] = e.target.value;
       });
+
+      // Create a private property to store the value
+      obj[`_${prop}`] = obj[prop];
+
       Object.defineProperty(obj, prop, {
         set(value) {
-          this._title = value;
-          input.value = obj[prop]; // Update the view when the title changes
-          updateElementById("view");
+          obj[`_${prop}`] = value;
+          input.value = obj[prop];
+          effect(value);
         },
         get() {
-          return this._title;
+          return obj[`_${prop}`];
         },
       });
     }
 
-    let data = { title: "Hello" };
-    let input = document.getElementById("titleInput");
+    //one-way binding
+    function bindElementToProperty(input, obj, prop, effect) {
+      // Set the initial value
+      input.innerHTML = obj[prop];
 
-    bindInputToProperty(input, data, "title");
-    data.title = "daddy"; // This will update the input value
+      // Create a private property to store the value
+      obj[`_${prop}`] = obj[prop];
 
-    setInterval(() => {
-      data.title = "daddy";
-      console.log(data.title);
-    }, 5000);
+      Object.defineProperty(obj, prop, {
+        set(value) {
+          obj[`_${prop}`] = value;
+          input.innerHTML = obj[prop];
+          effect(value);
+        },
+        get() {
+          return obj[`_${prop}`];
+        },
+      });
+    }
+
+    const converterComponent =
+      document.getElementsByTagName("currency-converter")[0];
+
+    // Your component starts here
+
+    let data = { amount: 1, rate: 1.81 };
+    let input = converterComponent.inputElement;
+    let propName = "amount";
+
+    bindInputToProperty(input, data, propName, (v) => {
+      updateResult();
+    });
+
+    bindElementToProperty(converterComponent.rateElement, data, "rate", (v) => {
+      updateResult();
+    });
+    updateResult();
+
+    converterComponent.onUpdateCallback = () => {
+      data.rate = (1.8 + Math.random() / 10).toFixed(2);
+    };
+
+    function updateResult() {
+      converterComponent.resultInnerHtml = data.amount * data.rate;
+    }
   </script>
 </html>
