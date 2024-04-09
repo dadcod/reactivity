@@ -61,16 +61,15 @@
     // Your component starts here
 
     let data = { amount: 1, rate: 1.81 };
-    let input = converterComponent.inputElement;
-    let propName = "amount";
 
-    bindInputToProperty(input, data, propName, (v) => {
+    bindInputToProperty(converterComponent.inputElement, data, "amount", (v) => {
       updateResult();
     });
 
     bindElementToProperty(converterComponent.rateElement, data, "rate", (v) => {
       updateResult();
     });
+
     updateResult();
 
     converterComponent.onUpdateCallback = () => {
