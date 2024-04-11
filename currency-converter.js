@@ -25,14 +25,18 @@ class CurrencyConverter extends HTMLElement {
         `;
 
     const button = this.shadowRoot.querySelector("#update");
-    button.addEventListener("click", () => this.onUpdateCallback());
+    button.addEventListener("click", () => this.onRateUpdateCallback());
+
+    this.inputElement.addEventListener("input", (e) =>
+      this.onAmountInputCallback?.(e.target.value)
+    );
   }
 
   get inputElement() {
     return this.shadowRoot.getElementById("currencyAmount");
   }
   set inputInnerHtml(value) {
-    this.shadowRoot.getElementById("currencyAmount").innerHTML = value;
+    this.shadowRoot.getElementById("currencyAmount").value = value;
   }
 
   get rateElement() {
@@ -46,12 +50,19 @@ class CurrencyConverter extends HTMLElement {
     this.shadowRoot.getElementById("result").innerHTML = result;
   }
 
-  get onUpdateCallback() {
-    return this._onUpdateCallback;
+  get onRateUpdateCallback() {
+    return this._onRateUpdateCallback;
   }
 
-  set onUpdateCallback(callback) {
-    this._onUpdateCallback = callback;
+  set onRateUpdateCallback(callback) {
+    this._onRateUpdateCallback = callback;
+  }
+
+  get onAmountInputCallback() {
+    return this._onInput;
+  }
+  set onAmountInputCallback(callback) {
+    this._onInput = callback;
   }
 }
 
